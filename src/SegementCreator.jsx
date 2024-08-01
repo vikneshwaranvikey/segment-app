@@ -60,7 +60,7 @@ function SegmentCreator() {
     return (
         <>
             <div className="flex">
-                <div className="w-screen h-screen p-4 bg-gray-100">
+                <div className="w-screen h-screen p-4 bg-gray-100 ">
                     <div className="mb-4 text-lg font-semibold bg-cyan-500 text-white p-4">← View Audience</div>
                     <Button onClick={handleSaveSegment} variant="outline" className={buttonflash}><span className={buttonText}>Save segment</span></Button>
                 </div>
