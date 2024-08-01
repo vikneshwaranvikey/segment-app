@@ -65,69 +65,71 @@ function SegmentCreator() {
                     <Button onClick={handleSaveSegment} variant="outline" className={buttonflash}><span className={buttonText}>Save segment</span></Button>
                 </div>
                 {isOpen && (
-                    <div className="w-1/2 p-4 bg-white">
-                        <div className="mb-4 text-lg font-semibold bg-cyan-500 text-white p-4">← Saving Segment</div>
-                        <div className="space-y-4">
-                            <Input
-                                placeholder="Enter the Name of the Segment"
-                                value={segmentName}
-                                onChange={(e) => setSegmentName(e.target.value)}
-                            />
-                            <p className="text-sm text-gray-600">To save your segment, you need to add the schemas to build the query</p>
-                            <div className="flex space-x-4 mb-2">
-                                <div className="flex items-center">
-                                    <span className="w-3 h-3 bg-green-500 rounded-full mr-1"></span>
-                                    <span className="text-sm">User Traits</span>
+                    <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black bg-opacity-50 z-50">
+                        <div className="w-1/2 p-4 bg-white rounded-lg shadow-lg">
+                            <div className="mb-4 text-lg font-semibold bg-cyan-500 text-white p-4">← Saving Segment</div>
+                            <div className="space-y-4">
+                                <Input
+                                    placeholder="Enter the Name of the Segment"
+                                    value={segmentName}
+                                    onChange={(e) => setSegmentName(e.target.value)}
+                                />
+                                <p className="text-sm text-gray-600">To save your segment, you need to add the schemas to build the query</p>
+                                <div className="flex space-x-4 mb-2">
+                                    <div className="flex items-center">
+                                        <span className="w-3 h-3 bg-green-500 rounded-full mr-1"></span>
+                                        <span className="text-sm">User Traits</span>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <span className="w-3 h-3 bg-red-500 rounded-full mr-1"></span>
+                                        <span className="text-sm">Group Traits</span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center">
-                                    <span className="w-3 h-3 bg-red-500 rounded-full mr-1"></span>
-                                    <span className="text-sm">Group Traits</span>
+                                <div className="bg-blue-100 p-4 rounded">
+                                    {selectedSchemas.map((schema, index) => {
+                                        const schemaOption = schemaOptions.find(option => option.value === schema);
+                                        return (
+                                            <div key={index} className="flex items-center space-x-2 mb-2">
+                                                <span className={`w-3 h-3 ${schemaOption.type === 'user' ? 'bg-green-500' : 'bg-red-500'} rounded-full`}></span>
+                                                <Select value={schema} onValueChange={(value) => {
+                                                    const newSelectedSchemas = [...selectedSchemas];
+                                                    newSelectedSchemas[index] = value;
+                                                    setSelectedSchemas(newSelectedSchemas);
+                                                }}>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue>{schemaOption.label}</SelectValue>
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {schemaOptions.filter(option => !selectedSchemas.includes(option.value) || option.value === schema).map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <Button variant="ghost" onClick={() => handleRemoveSchema(index)}><Deleticons /></Button>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
+                                <Select value={currentSchema} onValueChange={setCurrentSchema}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Add schema to segment" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {availableOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Button variant="link" className="text-teal-600" onClick={handleAddNewSchema}>+ Add new schema</Button>
                             </div>
-                            <div className="bg-blue-100 p-4 rounded">
-                                {selectedSchemas.map((schema, index) => {
-                                    const schemaOption = schemaOptions.find(option => option.value === schema);
-                                    return (
-                                        <div key={index} className="flex items-center space-x-2 mb-2">
-                                            <span className={`w-3 h-3 ${schemaOption.type === 'user' ? 'bg-green-500' : 'bg-red-500'} rounded-full`}></span>
-                                            <Select value={schema} onValueChange={(value) => {
-                                                const newSelectedSchemas = [...selectedSchemas];
-                                                newSelectedSchemas[index] = value;
-                                                setSelectedSchemas(newSelectedSchemas);
-                                            }}>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue>{schemaOption.label}</SelectValue>
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {schemaOptions.filter(option => !selectedSchemas.includes(option.value) || option.value === schema).map((option) => (
-                                                        <SelectItem key={option.value} value={option.value}>
-                                                            {option.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <Button variant="ghost" onClick={() => handleRemoveSchema(index)}><Deleticons /></Button>
-                                        </div>
-                                    );
-                                })}
+                            <div className="mt-4 flex justify-end space-x-2">
+                                <Button onClick={handleSave} className="bg-teal-500 hover:bg-teal-600 text-white">Save the Segment</Button>
+                                <Button variant="outline" onClick={() => setIsOpen(false)} className="text-red-500 border-red-500">Cancel</Button>
                             </div>
-                            <Select value={currentSchema} onValueChange={setCurrentSchema}>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Add schema to segment" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {availableOptions.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Button variant="link" className="text-teal-600" onClick={handleAddNewSchema}>+ Add new schema</Button>
-                        </div>
-                        <div className="mt-4 flex justify-end space-x-2">
-                            <Button onClick={handleSave} className="bg-teal-500 hover:bg-teal-600 text-white">Save the Segment</Button>
-                            <Button variant="outline" onClick={() => setIsOpen(false)} className="text-red-500 border-red-500">Cancel</Button>
                         </div>
                     </div>
                 )}
